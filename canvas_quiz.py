@@ -1,7 +1,7 @@
 import json
 import sys
 
-from canvas import get_data
+from canvas import get_data, get_submissions
 
 
 quiz_data = get_data('quizzes/')
@@ -23,5 +23,4 @@ for quiz in quiz_data:
         questions[question_id] = question_text
     questions_fname = 'questions_' + quiz_id + '.txt'
     open(questions_fname, 'w').write(json.dumps(question_data))
-    sub_data = get_data('assignments/' + assignment_id + '/submissions?include[]=submission_history')
-    open('sub_' + quiz_id + '.txt', 'w').write(json.dumps(sub_data))
+    get_submissions(assignment_id, 'sub_')

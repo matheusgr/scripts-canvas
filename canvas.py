@@ -1,3 +1,4 @@
+import json
 import os
 import os.path
 import time
@@ -65,3 +66,7 @@ def get_data(addr, paginate=True):
             links = links_from_header.extract(r.headers['Link'])
         
     return result
+
+def get_submissions(assignment_id, prefix):
+    sub_data = get_data('assignments/' + assignment_id + '/submissions?include[]=submission_history')
+    open(prefix + assignment_id + '.txt', 'w').write(json.dumps(sub_data))
