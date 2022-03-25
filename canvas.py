@@ -14,6 +14,7 @@ class CanvasError(Exception):
 
 load_dotenv()
 
+debug = bool(os.getenv("DEBUG"))
 header = {'Authorization': 'Bearer ' + '%s' % os.getenv("TOKEN")}
 canvas_url = os.getenv("URL") + '/' + os.getenv("COURSE_ID")
 
@@ -38,6 +39,7 @@ def get_data(addr, paginate=True):
     time.sleep(int(os.getenv("SLEEP_TIME")))
     url = canvas_url + '/' + addr
     r = requests.get(url, headers=header )
+    print(r)
     if r.status_code == 404:
         raise CanvasError("404 Not Found")
     data = r.json()
@@ -46,6 +48,8 @@ def get_data(addr, paginate=True):
         result = list(data)
     else:
         result = [data]
+    if debug:
+        print(result)
     if not paginate:
         return result
     if 'Link' in r.headers:
