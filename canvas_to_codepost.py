@@ -1,3 +1,4 @@
+from curses.ascii import isdigit
 import os
 import zipfile
 import rarfile
@@ -27,7 +28,28 @@ def descompress(open_f, list_f, name_f, has_file, ok):
         return ok, has_file
 
 
-for fname in os.listdir():
+fnames = os.listdir()
+fnames_fixed = {}
+
+for fname in fnames:
+    if "_" not in fname:
+        continue
+    s_id = fname.split("_")[1]
+    if '-' in fname:
+        fname_code = fname.split('-')[-1][:-4]
+        if not fname_code.isdigit():
+            fnames_fixed[s_id] = (fname, 0)
+            continue    
+        if s_id in fnames_fixed:
+            if int(fname_code) <= fnames_fixed[s_id][1]:
+                continue
+            fnames_fixed[s_id] = (fname, int(fname_code))
+        else:
+            fnames_fixed[s_id] = (fname, int(fname_code))
+    else:
+        fnames_fixed[s_id] = (fname, 0)
+
+for fname in [v[0] for v in fnames_fixed.values()]:
     if fname.lower().endswith(".zip") or fname.lower().endswith(".gz") or fname.lower().endswith(".rar"):
         field = 1
         if "_LATE_" in fname:
